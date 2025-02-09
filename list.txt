@@ -114,6 +114,7 @@ ratu
 kata
 dana
 dan
+sapi
 atau
 sebagai
 hanya
@@ -124,7 +125,10 @@ kamis
 jumat
 sabtu
 minggu
+riset
 januari
+cacat
+cacar
 februari
 maret
 oktober
@@ -277,3 +281,6 @@ ununseptium
 minta
 maaf
 teh
+aksi
+manusia
+jebakan
