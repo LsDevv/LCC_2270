@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permainan Tebak Kata</title>
+    <script async src="https://unpkg.com/three@0.157.0/build/three.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+        }
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        #game-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            padding: 20px;
+            color: #000000;
+        }
+        .start-screen, .game-screen {
+            text-align: center;
+        }
+        .start-button {
+            background-color: #000000;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .word-input {
+            padding: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 18px;
+            width: 200px;
+        }
+        .target-letters {
+            color: #ff0000;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .word-tag {
+            background-color: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            margin: 5px;
+            display: inline-block;
+        }
+        .impossible-message {
+            margin-bottom: 15px;
+            color: #ff0000;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .game-message {
+            margin-bottom: 15px;
+            color: #666666;
+            font-size: 16px;
+            font-style: italic;
+        }
+        #word-history {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    <div id="game-container">
+        <h1>Permainan Tebak Kata</h1>
+        <p>Instagram: LsChavve</p>
+        
+        <div id="start-screen" class="start-screen">
+            <p>High Score: <span id="high-score">0</span></p>
+            <p id="final-score"></p>
+            <p id="word-count"></p>
+            <p id="game-message" class="game-message"></p>
+            <p id="impossible-message" class="impossible-message" style="display: none;">
+                Kamu melakukan sesuatu yang mustahil?!
+            </p>
+            <button class="start-button" onclick="startGame()">Mulai</button>
+        </div>
+        <div id="game-screen" class="game-screen" style="display: none;">
+            <div id="lives-container">❤️❤️</div>
+            <p>Score: <span id="score">0</span></p>
+            
+            <div>
+                <p>Target Letters:</p>
+                <p id="target-letters" class="target-letters"></p>
+            </div>
+            
+            <input type="text" 
+                   id="word-input" 
+                   class="word-input" 
+                   placeholder="Ketik kata di sini..."
+                   onkeypress="handleKeyPress(event)">
+            
+            <div id="word-history"></div>
+        </div>
+    </div>
+
+    <script>
+        const INITIAL_LIVES = 2;
+        const POINTS_PER_WORD = 2;
+        const GAME_MESSAGES = [
+            'Coba lagi',
+            'Tetap berusaha',
+            'Tingkatkan literasi',
+            'Rajin membaca KBBI'
+        ];
+
+        let gameStarted = false;
+        let lives = INITIAL_LIVES;
+        let score = 0;
+        let highScore = 0;
+        let targetLetters = '';
+        let wordList = [];
+        let usedWords = [];
+        let scene, camera, renderer;
+
+        function generateTargetLetters() {
+            if (wordList.length === 0) return '';
+            const availableWords = wordList.filter(word => !usedWords.includes(word));
+            if (availableWords.length === 0) {
+                gameOver(true);
+                return '';
+            }
+            const randomWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+            const startIndex = Math.floor(Math.random() * (randomWord.length - 2));
+            return randomWord.slice(startIndex, startIndex + Math.floor(Math.random() * 2) + 2);
+        }
+
+        function startGame() {
+            gameStarted = true;
+            lives = INITIAL_LIVES;
+            score = 0;
+            usedWords = [];
+            targetLetters = generateTargetLetters();
+            
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            document.getElementById('lives-container').innerHTML = '❤️'.repeat(lives);
+            document.getElementById('score').textContent = score;
+            document.getElementById('target-letters').textContent = targetLetters;
+            document.getElementById('word-history').innerHTML = '';
+            document.getElementById('word-input').value = '';
+            document.getElementById('game-message').textContent = '';
+            document.getElementById('impossible-message').style.display = 'none';
+        }
+
+        function gameOver(completed = false) {
+            gameStarted = false;
+            highScore = Math.max(highScore, score);
+            
+            document.getElementById('start-screen').style.display = 'block';
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('high-score').textContent = highScore;
+            document.getElementById('final-score').textContent = `Final Score: ${score}`;
+            document.getElementById('word-count').textContent = 
+                `Kata yang benar: ${usedWords.length}/${wordList.length}`;
+            
+            if (completed) {
+                document.getElementById('impossible-message').style.display = 'block';
+                document.getElementById('game-message').textContent = '';
+            } else {
+                document.getElementById('impossible-message').style.display = 'none';
+                document.getElementById('game-message').textContent = 
+                    GAME_MESSAGES[Math.floor(Math.random() * GAME_MESSAGES.length)];
+            }
+            
+            document.querySelector('.start-button').textContent = 'Main Lagi';
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                const input = document.getElementById('word-input');
+                const word = input.value.toUpperCase();
+                
+                if (!word || usedWords.includes(word)) return;
+
+                if (wordList.includes(word) && word.includes(targetLetters)) {
+                    score += POINTS_PER_WORD;
+                    usedWords.push(word);
+                    document.getElementById('score').textContent = score;
+                    
+                    const wordTag = document.createElement('span');
+                    wordTag.className = 'word-tag';
+                    wordTag.textContent = word;
+                    document.getElementById('word-history').appendChild(wordTag);
+                    
+                    targetLetters = generateTargetLetters();
+                    document.getElementById('target-letters').textContent = targetLetters;
+                } else {
+                    lives--;
+                    document.getElementById('lives-container').innerHTML = '❤️'.repeat(lives);
+                    
+                    if (lives === 0) {
+                        gameOver(false);
+                    }
+                }
+                
+                input.value = '';
+            }
+        }
+
+        function initThreeJS() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            
+            const segments = [];
+            const segmentCount = 12;
+            const radius = 2;
+            
+            for (let i = 0; i < segmentCount; i++) {
+                const angle = (i / segmentCount) * Math.PI * 2;
+                const geometry = new THREE.PlaneGeometry(1.5, 1.5);
+                const material = new THREE.MeshBasicMaterial({
+                    color: i % 2 === 0 ? 0xff0000 : 0xffffff,
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0.7,
+                });
+                
+                const segment = new THREE.Mesh(geometry, material);
+                segment.position.x = Math.cos(angle) * radius;
+                segment.position.y = Math.sin(angle) * radius;
+                segment.rotation.z = angle;
+                
+                scene.add(segment);
+                segments.push({
+                    mesh: segment,
+                    material,
+                    initialAngle: angle,
+                    rotationSpeed: 0.02 * (i % 2 === 0 ? 1 : -1),
+                    pulsePhase: Math.random() * Math.PI * 2
+                });
+            }
+
+            function handleResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+            handleResize();
+            window.addEventListener('resize', handleResize);
+            
+            camera.position.z = 4;
+            
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                segments.forEach((segment, index) => {
+                    segment.mesh.rotation.z += segment.rotationSpeed;
+                    
+                    segment.pulsePhase += 0.03;
+                    const scale = 1 + Math.sin(segment.pulsePhase) * 0.2;
+                    segment.mesh.scale.set(scale, scale, 1);
+                    
+                    if (index % 2 === 0) {
+                        const intensity = (Math.sin(segment.pulsePhase) + 1) / 2;
+                        segment.material.color.setRGB(1, intensity * 0.3, intensity * 0.3);
+                    } else {
+                        const intensity = (Math.cos(segment.pulsePhase) + 1) / 2;
+                        segment.material.opacity = 0.5 + intensity * 0.5;
+                    }
+                });
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+        }
+
+        // Load word list and initialize game
+        fetch('list.txt')
+            .then(response => response.text())
+            .then(text => {
+                wordList = text.split('\n')
+                    .map(word => word.trim().toUpperCase())
+                    .filter(word => word.length > 0);
+            })
+            .catch(error => {
+                console.error('Error loading word list:', error);
+                wordList = ['MAKAN', 'TIDUR', 'BELAJAR', 'MEMBACA', 'MENULIS', 'BERMAIN', 'BEKERJA', 'BERJALAN'];
+            });
+
+        // Initialize Three.js scene when page loads
+        window.onload = initThreeJS;
+    </script>
+</body>
+</html>
