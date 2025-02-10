@@ -1,8 +1,3 @@
-// ==================================================
-// Project Imports
-// ==================================================
-
-// main.js
 import React, { useEffect, useRef, useState, createContext, useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import * as THREE from 'three';
