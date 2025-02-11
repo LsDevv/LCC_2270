@@ -47,10 +47,25 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
 </style>
+<div class="floating-message" id="randomWord">Loading...</div>
 
-<div class="floating-message">
-  Daftar kata baru 1000+! 
-</div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const words = ['Refresh untuk update', 'Selamat datang!', 'Apa itu KBBI? ', 'Selamat bermain!', 'Semoga beruntung.','Fakta: ada lebih dari 100 kata fobia'];
+      const randomIndex = Math.floor(Math.random() * words.length);
+      const randomWord = words[randomIndex];
+
+      // Get the element by its id and update its content
+      const randomWordElement = document.getElementById('randomWord');
+      randomWordElement.textContent = randomWord; // Replace 'Loading...' with random word
+      randomWordElement.style.display = 'block';  // Display the element with the random word
+
+      // Optionally hide the message after the animation ends
+      setTimeout(() => {
+        randomWordElement.style.display = 'none'; // Hide the message after animation ends
+      }, 3000); // Duration of the animation
+    });
+  </script>
     <style>
         body {
             margin: 0;
@@ -265,6 +280,7 @@
                 
                 <h3>Informasi Lainnya</h3>
                 <p>Refresh website untuk cek update</p>
+                <p>Ver 2.1 [New Pop-up Message]</p>
                 <p>Ver 2.0 [Fixed UI]</p>
                 <p>Ver 1.8 [Daftar kata fobia]</p>
                 <p>Ver 1.7 [New UI Design]</p>
@@ -491,4 +507,4 @@
     </script>
 </body>
 </html>
-[Versi 2.0]
+2.1.0
