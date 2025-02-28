@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tebak Kata Indonesia</title>
+    <title>WordGuess</title>
     <script async src="https://unpkg.com/three@0.157.0/build/three.min.js"></script>
     <style>
   @keyframes floatAndFade {
@@ -51,7 +51,7 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const words = ['Refresh untuk update', 'Selamat datang!', 'Apa itu KBBI? ', 'Selamat bermain!', 'Semoga beruntung.','Fakta: ada lebih dari 100 kata fobia'];
+      const words = ['Refresh untuk update', 'Selamat datang!', 'Apa itu KBBI? ', 'Selamat bermain!', 'Semoga beruntung.','Fakta: ada lebih dari 100 kata fobia', 'Semua kata ada!'];
       const randomIndex = Math.floor(Math.random() * words.length);
       const randomWord = words[randomIndex];
 
@@ -213,7 +213,7 @@
     <div id="canvas-container"></div>
     <div id="game-container">
         <div style="text-align: center;">
-            <h1 style="margin: 0;">Tebak Kata Indonesia</h1>
+            <h1 style="margin: 0;">𝙸𝚗𝚍𝚘𝚗𝚎𝚜𝚒𝚊 𝚆𝚘𝚛𝚍𝙶𝚞𝚎𝚜𝚜</h1>
             <p style="margin: 5px 0;"></p>
             
             <div id="start-screen">
@@ -224,7 +224,7 @@
                 <p id="impossible-message" style="color: #ff0000; font-weight: bold; display: none;">
                     Sampai daftar katanya habis?!
                 </p>
-                <button class="start-button" onclick="startGame()">Mulai</button>
+                <button class="start-button" onclick="startGame()">𝙼𝚞𝚕𝚊𝚒</button>
             </div>
             
             <div id="game-screen" style="display: none;">
@@ -232,9 +232,10 @@
                 <p>Skor: <span id="score">0</span></p>
                 
                 <div>
-                    <p>Huruf yang masuk:</p>
+                    <p>𝙃𝙪𝙧𝙪𝙛 𝙔𝙖𝙣𝙜 𝙈𝙖𝙨𝙪𝙠:</p>
                     <p id="target-letters" class="target-letters"></p>
                 </div>
+                <div id=wordTag></div>
                 
                 <input type="text" 
                        id="word-input" 
@@ -250,7 +251,7 @@
     <!-- Info Button -->
     <div class="info-button" onclick="showRules()">
         <div class="info-icon">i</div>
-        <span class="info-text">Cara Bermain</span>
+        <span class="info-text">𝘊𝘢𝘳𝘢 𝘉𝘦𝘳𝘮𝘢𝘪𝘯</span>
     </div>
 
     <!-- Instagram Button -->
@@ -285,6 +286,7 @@
                 <p>Ver 1.8 [Daftar kata fobia]</p>
                 <p>Ver 1.7 [New UI Design]</p>
                 <p>Versi 1.6 [500+ Kata baru]</p>
+                <p>Versi 2.1 [Daftar kata lengkap!]</p>
                 
             </div>
         </div>
@@ -507,4 +509,3 @@
     </script>
 </body>
 </html>
-2.1.0
