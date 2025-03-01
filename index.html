@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I. SEE. YOU.</title>
+    <title>WordGuess</title>
     <script async src="https://unpkg.com/three@0.157.0/build/three.min.js"></script>
     <style>
   @keyframes floatAndFade {
@@ -488,7 +488,7 @@
         }
 
         // Load word list and initialize game
-        fetch('iwlm_updated.txt')
+        fetch('merged_output.txt')
             .then(response => response.text())
             .then(text => {
                 wordList = text.split('\n')
