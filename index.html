@@ -485,7 +485,7 @@
         }
 
         // Load word list and initialize game
-        fetch('list.txt')
+        fetch('iwlm_updated.txt')
             .then(response => response.text())
             .then(text => {
                 wordList = text.split('\n')
